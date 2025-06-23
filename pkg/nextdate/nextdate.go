@@ -40,7 +40,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		// Увеличиваем дату на год до тех пор, пока она не станет больше now
 		for {
 			date = date.AddDate(1, 0, 0)
-			if afterNow(date, now) {
+			if AfterNow(date, now) {
 				break
 			}
 		}
@@ -65,7 +65,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		// Увеличиваем дату на указанное количество дней
 		for {
 			date = date.AddDate(0, 0, interval)
-			if afterNow(date, now) {
+			if AfterNow(date, now) {
 				break
 			}
 		}
@@ -78,8 +78,8 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	return date.Format(DateFormat), nil
 }
 
-// afterNow проверяет, что первая дата больше второй (без учета времени)
-func afterNow(date, now time.Time) bool {
+// AfterNow проверяет, что первая дата больше второй (без учета времени)
+func AfterNow(date, now time.Time) bool {
 	// Сравниваем только даты, игнорируя время
 	dateOnly := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 	nowOnly := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
