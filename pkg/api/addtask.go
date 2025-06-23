@@ -85,7 +85,7 @@ func checkDate(task *db.Task) error {
 }
 
 // writeJSON сериализует данные в JSON и отправляет ответ
-func writeJSON(w http.ResponseWriter, data interface{}) {
+func writeJSON(w http.ResponseWriter, data any) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	jsonData, err := json.Marshal(data)
