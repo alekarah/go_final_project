@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"todo/pkg/api"
 )
 
 const (
@@ -19,6 +21,9 @@ func StartServer() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	// Инициализируем API обработчики
+	api.Init()
 
 	// Настраиваем файл-сервер для обслуживания статических файлов
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
