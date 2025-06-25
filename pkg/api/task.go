@@ -9,11 +9,11 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 		// Добавление задачи
 		addTaskHandler(w, r)
 	case http.MethodGet:
-		// TODO: получение задачи (будет реализовано на следующих шагах)
-		writeJSON(w, map[string]string{"error": "GET метод пока не реализован"})
+		// Получение задачи по ID
+		getTaskHandler(w, r)
 	case http.MethodPut:
-		// TODO: обновление задачи (будет реализовано на следующих шагах)
-		writeJSON(w, map[string]string{"error": "PUT метод пока не реализован"})
+		// Обновление задачи
+		updateTaskHandler(w, r)
 	case http.MethodDelete:
 		// TODO: удаление задачи (будет реализовано на следующих шагах)
 		writeJSON(w, map[string]string{"error": "DELETE метод пока не реализован"})
