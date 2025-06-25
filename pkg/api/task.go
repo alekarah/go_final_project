@@ -15,8 +15,8 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 		// Обновление задачи
 		updateTaskHandler(w, r)
 	case http.MethodDelete:
-		// TODO: удаление задачи (будет реализовано на следующих шагах)
-		writeJSON(w, map[string]string{"error": "DELETE метод пока не реализован"})
+		// Удаление задачи
+		deleteTaskHandler(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}

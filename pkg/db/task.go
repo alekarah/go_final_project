@@ -73,3 +73,53 @@ func UpdateTask(task *Task) error {
 
 	return nil
 }
+
+// DeleteTask удаляет задачу по идентификатору
+func DeleteTask(id string) error {
+	// SQL запрос для удаления задачи
+	query := `DELETE FROM scheduler WHERE id = ?`
+
+	// Выполняем запрос
+	res, err := db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	// Проверяем количество удаленных записей
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	// Если ни одна запись не была удалена, значит задача не найдена
+	if count == 0 {
+		return fmt.Errorf("задача с ID %s не найдена", id)
+	}
+
+	return nil
+}
+
+// UpdateDate обновляет только дату задачи (для отметки выполнения)
+func UpdateDate(nextDate string, id string) error {
+	// SQL запрос для обновления только даты
+	query := `UPDATE scheduler SET date = ? WHERE id = ?`
+
+	// Выполняем запрос
+	res, err := db.Exec(query, nextDate, id)
+	if err != nil {
+		return err
+	}
+
+	// Проверяем количество обновленных записей
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	// Если ни одна запись не была обновлена, значит задача не найдена
+	if count == 0 {
+		return fmt.Errorf("задача с ID %s не найдена", id)
+	}
+
+	return nil
+}
