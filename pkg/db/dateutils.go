@@ -6,7 +6,10 @@ import (
 	"time"
 )
 
-// isDateFormat проверяет, соответствует ли строка формату DD.MM.YYYY
+// isDateFormat проверяет, соответствует ли строка формату DD.MM.YYYY.
+//
+// Валидация выполняется без регулярных выражений путем проверки
+// длины строки, разделителей и символов.
 func isDateFormat(s string) bool {
 	// Проверяем длину строки (должна быть ровно 10 символов)
 	if len(s) != 10 {
@@ -36,7 +39,10 @@ func isDateFormat(s string) bool {
 	return true
 }
 
-// convertDateFormat конвертирует дату из формата DD.MM.YYYY в YYYYMMDD
+// convertDateFormat конвертирует дату из DD.MM.YYYY в YYYYMMDD.
+//
+// Используется для преобразования пользовательского ввода
+// в формат базы данных.
 func convertDateFormat(dateStr string) (string, error) {
 	// Парсим дату в формате DD.MM.YYYY
 	t, err := time.Parse("02.01.2006", dateStr)

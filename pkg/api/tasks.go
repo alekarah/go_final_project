@@ -6,12 +6,17 @@ import (
 	"todo/pkg/db"
 )
 
-// TasksResp структура ответа для списка задач
+// TasksResp структура ответа для API endpoint /api/tasks.
 type TasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
 }
 
-// tasksHandler обрабатывает GET запросы к /api/tasks
+// tasksHandler обрабатывает GET запросы к /api/tasks.
+//
+// Поддерживает поиск через параметр search:
+//   - Без search - все задачи (до 50)
+//   - search="текст" - поиск по заголовку/комментарию
+//   - search="DD.MM.YYYY" - поиск по дате
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	// Проверяем метод запроса
 	if r.Method != http.MethodGet {

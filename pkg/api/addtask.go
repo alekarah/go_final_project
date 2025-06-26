@@ -8,7 +8,10 @@ import (
 	"todo/pkg/db"
 )
 
-// addTaskHandler обрабатывает POST запросы для добавления задач
+// addTaskHandler обрабатывает POST запросы для добавления задач.
+//
+// Валидирует JSON данные, проверяет обязательные поля и правила дат,
+// добавляет задачу в БД и возвращает ID созданной записи.
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 

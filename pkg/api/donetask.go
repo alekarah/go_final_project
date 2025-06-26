@@ -9,7 +9,10 @@ import (
 	"todo/pkg/nextdate"
 )
 
-// doneTaskHandler обрабатывает POST запросы для отметки задач как выполненных
+// doneTaskHandler обрабатывает POST запросы для отметки задач как выполненных.
+//
+// Для одноразовых задач - удаляет из БД. Для повторяющихся задач -
+// вычисляет следующую дату выполнения и обновляет запись.
 func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Проверяем метод запроса
 	if r.Method != http.MethodPost {

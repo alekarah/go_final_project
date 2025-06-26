@@ -2,7 +2,10 @@ package api
 
 import "net/http"
 
-// taskHandler обрабатывает запросы к /api/task с разными HTTP методами
+// taskHandler обрабатывает запросы к /api/task с разными HTTP методами.
+//
+// Маршрутизирует запросы по методам: POST (добавление), GET (получение),
+// PUT (обновление), DELETE (удаление).
 func taskHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:

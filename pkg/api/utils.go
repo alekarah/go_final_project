@@ -10,7 +10,10 @@ import (
 	"todo/pkg/nextdate"
 )
 
-// writeJSON сериализует данные в JSON и отправляет ответ
+// writeJSON сериализует данные в JSON и отправляет HTTP ответ.
+//
+// Автоматически устанавливает Content-Type заголовок и обрабатывает
+// ошибки сериализации.
 func writeJSON(w http.ResponseWriter, data any) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -24,7 +27,10 @@ func writeJSON(w http.ResponseWriter, data any) {
 	w.Write(jsonData)
 }
 
-// checkDate проверяет и корректирует дату задачи
+// checkDate проверяет и корректирует дату задачи.
+//
+// Устанавливает сегодняшнюю дату если не указана, валидирует формат,
+// проверяет правила повторения и корректирует прошедшие даты.
 func checkDate(task *db.Task) error {
 	now := time.Now()
 

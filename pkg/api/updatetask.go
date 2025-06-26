@@ -7,7 +7,10 @@ import (
 	"todo/pkg/db"
 )
 
-// updateTaskHandler обрабатывает PUT запросы для обновления задач
+// updateTaskHandler обрабатывает PUT запросы для обновления задач.
+//
+// Валидирует JSON данные (включая ID), проверяет обязательные поля
+// и правила дат, обновляет задачу в БД.
 func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 

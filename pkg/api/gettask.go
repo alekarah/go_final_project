@@ -7,7 +7,10 @@ import (
 	"todo/pkg/db"
 )
 
-// getTaskHandler обрабатывает GET запросы для получения задачи по ID
+// getTaskHandler обрабатывает GET запросы для получения задачи по ID.
+//
+// Получает ID из параметра запроса, находит задачу в БД
+// и возвращает JSON с данными задачи.
 func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем параметр id
 	id := r.FormValue("id")

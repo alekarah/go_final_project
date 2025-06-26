@@ -6,7 +6,10 @@ import (
 	"todo/pkg/db"
 )
 
-// deleteTaskHandler обрабатывает DELETE запросы для удаления задач
+// deleteTaskHandler обрабатывает DELETE запросы для удаления задач.
+//
+// Получает ID из параметра запроса, удаляет задачу из БД
+// и возвращает пустой JSON при успехе.
 func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем параметр id
 	id := r.FormValue("id")

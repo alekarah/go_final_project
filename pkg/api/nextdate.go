@@ -7,7 +7,10 @@ import (
 	"todo/pkg/nextdate"
 )
 
-// nextDateHandler обрабатывает GET запросы к /api/nextdate
+// nextDateHandler обрабатывает GET запросы к /api/nextdate.
+//
+// Вспомогательный endpoint для тестирования функции NextDate.
+// Принимает параметры now, date, repeat и возвращает следующую дату.
 func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	// Проверяем метод запроса
 	if r.Method != http.MethodGet {
