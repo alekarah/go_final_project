@@ -15,7 +15,7 @@
 //
 //	go run main.go
 //	TODO_PORT=8080 go run main.go
-package maingodoc
+package main
 
 import (
 	"log"

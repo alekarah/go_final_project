@@ -14,17 +14,17 @@ func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем параметр id
 	id := r.FormValue("id")
 	if id == "" {
-		writeJSON(w, map[string]string{"error": "Не указан идентификатор"})
+		writeJSON(w, map[string]string{"error": "Не указан идентификатор"}, http.StatusBadRequest)
 		return
 	}
 
 	// Удаляем задачу из базы данных
 	err := db.DeleteTask(id)
 	if err != nil {
-		writeJSON(w, map[string]string{"error": err.Error()})
+		writeJSON(w, map[string]string{"error": err.Error()}, http.StatusNotFound)
 		return
 	}
 
 	// Возвращаем пустой JSON в случае успеха
-	writeJSON(w, map[string]any{})
+	writeJSON(w, map[string]any{}, http.StatusOK)
 }

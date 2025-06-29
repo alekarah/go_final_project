@@ -15,7 +15,7 @@ func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем параметр id
 	id := r.FormValue("id")
 	if id == "" {
-		writeJSON(w, map[string]string{"error": "Не указан идентификатор"})
+		writeJSON(w, map[string]string{"error": "Не указан идентификатор"}, http.StatusBadRequest)
 		return
 	}
 
@@ -23,13 +23,13 @@ func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	task, err := db.GetTask(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			writeJSON(w, map[string]string{"error": "Задача не найдена"})
+			writeJSON(w, map[string]string{"error": "Задача не найдена"}, http.StatusNotFound)
 		} else {
-			writeJSON(w, map[string]string{"error": "Ошибка получения задачи: " + err.Error()})
+			writeJSON(w, map[string]string{"error": "Ошибка получения задачи: " + err.Error()}, http.StatusInternalServerError)
 		}
 		return
 	}
 
 	// Возвращаем задачу в JSON формате
-	writeJSON(w, task)
+	writeJSON(w, task, http.StatusOK)
 }

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -47,7 +47,7 @@ func convertDateFormat(dateStr string) (string, error) {
 	// Парсим дату в формате DD.MM.YYYY
 	t, err := time.Parse("02.01.2006", dateStr)
 	if err != nil {
-		return "", errors.New("некорректный формат даты")
+		return "", fmt.Errorf("некорректный формат даты: %w", err)
 	}
 
 	// Возвращаем в формате YYYYMMDD

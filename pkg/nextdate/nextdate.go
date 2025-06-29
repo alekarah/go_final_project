@@ -21,7 +21,7 @@
 package nextdate
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -49,13 +49,13 @@ const DateFormat = "20060102"
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	// Проверяем что правило повторения не пустое
 	if repeat == "" {
-		return "", errors.New("правило повторения не может быть пустым")
+		return "", fmt.Errorf("правило повторения не может быть пустым")
 	}
 
 	// Парсим исходную дату
 	date, err := time.Parse(DateFormat, dstart)
 	if err != nil {
-		return "", errors.New("некорректная исходная дата: " + err.Error())
+		return "", fmt.Errorf("некорректная исходная дата: %w", err)
 	}
 
 	// Разбираем правило повторения
@@ -65,7 +65,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	case "y":
 		// Ежегодное повторение
 		if len(parts) != 1 {
-			return "", errors.New("неверный формат правила для ежегодного повторения")
+			return "", fmt.Errorf("неверный формат правила для ежегодного повторения")
 		}
 
 		// Увеличиваем дату на год до тех пор, пока она не станет больше now
@@ -79,18 +79,18 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	case "d":
 		// Повторение через указанное количество дней
 		if len(parts) != 2 {
-			return "", errors.New("неверный формат правила для повторения по дням")
+			return "", fmt.Errorf("неверный формат правила для повторения по дням")
 		}
 
 		// Парсим количество дней
 		interval, err := strconv.Atoi(parts[1])
 		if err != nil {
-			return "", errors.New("некорректное количество дней: " + err.Error())
+			return "", fmt.Errorf("некорректное количество дней: %w", err)
 		}
 
 		// Проверяем ограничения
 		if interval <= 0 || interval > 400 {
-			return "", errors.New("количество дней должно быть от 1 до 400")
+			return "", fmt.Errorf("количество дней должно быть от 1 до 400")
 		}
 
 		// Увеличиваем дату на указанное количество дней
@@ -102,7 +102,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		}
 
 	default:
-		return "", errors.New("неизвестный тип правила повторения: " + parts[0])
+		return "", fmt.Errorf("неизвестный тип правила повторения: %s", parts[0])
 	}
 
 	// Возвращаем дату в формате "20060102"

@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"time"
 
@@ -23,17 +24,17 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	// Получаем параметр id
 	id := r.FormValue("id")
 	if id == "" {
-		writeJSON(w, map[string]string{"error": "Не указан идентификатор"})
+		writeJSON(w, map[string]string{"error": "Не указан идентификатор"}, http.StatusBadRequest)
 		return
 	}
 
 	// Получаем задачу из базы данных
 	task, err := db.GetTask(id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			writeJSON(w, map[string]string{"error": "Задача не найдена"})
+		if errors.Is(err, sql.ErrNoRows) {
+			writeJSON(w, map[string]string{"error": "Задача не найдена"}, http.StatusNotFound)
 		} else {
-			writeJSON(w, map[string]string{"error": "Ошибка получения задачи: " + err.Error()})
+			writeJSON(w, map[string]string{"error": "Ошибка получения задачи: " + err.Error()}, http.StatusInternalServerError)
 		}
 		return
 	}
@@ -43,7 +44,7 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 		// Одноразовая задача - удаляем
 		err = db.DeleteTask(id)
 		if err != nil {
-			writeJSON(w, map[string]string{"error": "Ошибка удаления задачи: " + err.Error()})
+			writeJSON(w, map[string]string{"error": "Ошибка удаления задачи: " + err.Error()}, http.StatusInternalServerError)
 			return
 		}
 	} else {
@@ -51,18 +52,18 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		nextDate, err := nextdate.NextDate(now, task.Date, task.Repeat)
 		if err != nil {
-			writeJSON(w, map[string]string{"error": "Ошибка вычисления следующей даты: " + err.Error()})
+			writeJSON(w, map[string]string{"error": "Ошибка вычисления следующей даты: " + err.Error()}, http.StatusBadRequest)
 			return
 		}
 
 		// Обновляем дату в базе данных
 		err = db.UpdateDate(nextDate, id)
 		if err != nil {
-			writeJSON(w, map[string]string{"error": "Ошибка обновления даты: " + err.Error()})
+			writeJSON(w, map[string]string{"error": "Ошибка обновления даты: " + err.Error()}, http.StatusInternalServerError)
 			return
 		}
 	}
 
 	// Возвращаем пустой JSON в случае успеха
-	writeJSON(w, map[string]any{})
+	writeJSON(w, map[string]any{}, http.StatusOK)
 }

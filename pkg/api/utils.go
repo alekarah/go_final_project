@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,7 +14,7 @@ import (
 //
 // Автоматически устанавливает Content-Type заголовок и обрабатывает
 // ошибки сериализации.
-func writeJSON(w http.ResponseWriter, data any) {
+func writeJSON(w http.ResponseWriter, data any, statusCode int) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	jsonData, err := json.Marshal(data)
@@ -23,7 +23,7 @@ func writeJSON(w http.ResponseWriter, data any) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(statusCode)
 	w.Write(jsonData)
 }
 
@@ -42,7 +42,7 @@ func checkDate(task *db.Task) error {
 	// Проверяем корректность формата даты
 	t, err := time.Parse(nextdate.DateFormat, task.Date)
 	if err != nil {
-		return errors.New("дата представлена в формате, отличном от " + nextdate.DateFormat)
+		return fmt.Errorf("дата представлена в формате, отличном от %s: %w", nextdate.DateFormat, err)
 	}
 
 	// Если указано правило повторения, проверяем его корректность
@@ -50,7 +50,7 @@ func checkDate(task *db.Task) error {
 	if task.Repeat != "" {
 		next, err = nextdate.NextDate(now, task.Date, task.Repeat)
 		if err != nil {
-			return errors.New("правило повторения указано в неправильном формате: " + err.Error())
+			return fmt.Errorf("правило повторения указано в неправильном формате: %w", err)
 		}
 	}
 
