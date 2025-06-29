@@ -1,0 +1,69 @@
+package api
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+
+	"todo/pkg/db"
+	"todo/pkg/nextdate"
+)
+
+// writeJSON сериализует данные в JSON и отправляет HTTP ответ.
+//
+// Автоматически устанавливает Content-Type заголовок и обрабатывает
+// ошибки сериализации.
+func writeJSON(w http.ResponseWriter, data any, statusCode int) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, "Ошибка сериализации JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(statusCode)
+	w.Write(jsonData)
+}
+
+// checkDate проверяет и корректирует дату задачи.
+//
+// Устанавливает сегодняшнюю дату если не указана, валидирует формат,
+// проверяет правила повторения и корректирует прошедшие даты.
+func checkDate(task *db.Task) error {
+	now := time.Now()
+
+	// Если дата не указана, используем сегодняшнюю
+	if task.Date == "" {
+		task.Date = now.Format(nextdate.DateFormat)
+	}
+
+	// Проверяем корректность формата даты
+	t, err := time.Parse(nextdate.DateFormat, task.Date)
+	if err != nil {
+		return fmt.Errorf("дата представлена в формате, отличном от %s: %w", nextdate.DateFormat, err)
+	}
+
+	// Если указано правило повторения, проверяем его корректность
+	var next string
+	if task.Repeat != "" {
+		next, err = nextdate.NextDate(now, task.Date, task.Repeat)
+		if err != nil {
+			return fmt.Errorf("правило повторения указано в неправильном формате: %w", err)
+		}
+	}
+
+	// Если дата задачи в прошлом
+	if nextdate.AfterNow(now, t) {
+		if task.Repeat == "" {
+			// Если правила повторения нет, берем сегодняшнюю дату
+			task.Date = now.Format(nextdate.DateFormat)
+		} else {
+			// Иначе используем вычисленную следующую дату
+			task.Date = next
+		}
+	}
+
+	return nil
+}
